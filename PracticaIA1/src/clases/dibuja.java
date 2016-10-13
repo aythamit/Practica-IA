@@ -24,5 +24,6 @@ public class dibuja extends Canvas
 		}
 		
 		g.drawImage(imagen, 0,0,this);
+		
 	}
 }

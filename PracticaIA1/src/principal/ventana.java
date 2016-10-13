@@ -19,5 +19,6 @@ public class ventana
 	public static void main(String arg[])
 	{
 		new ventana();
+		System.out.println("hola socio");
 	}
 }
