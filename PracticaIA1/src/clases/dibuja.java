@@ -14,7 +14,7 @@ public class dibuja extends Canvas
 	public void paint(Graphics g)
 	{
 		
-		// hola k ase
+		// hola k 
 		try {
 			URL ruta = getClass().getResource("../fondo.jpg");
 			imagen = ImageIO.read(ruta);
