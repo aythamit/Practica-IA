@@ -43,6 +43,7 @@ package clases;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.net.URL;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -54,12 +55,12 @@ public class mapa
       Constructor 
    */  
 
-	int MAX_M = 15;
-	int MAX_N = 15;
+	 static int MAX_M = 19;
+	 static int MAX_N = 18;
 	int medida = 32;
 	private final JPanel gui = new JPanel(new BorderLayout(3, 3));
 	Graphics[][] matriz2 = new Graphics[MAX_M][MAX_N];
-	private JButton[][] matriz = new JButton[MAX_M][MAX_N];
+	private static JButton[][] matriz = new JButton[MAX_M][MAX_N];
 	private JPanel chessBoard;
 
    public mapa()  
@@ -110,6 +111,11 @@ public class mapa
        return gui;
    }
    
+   public static void SetCoche(int x , int y, ImageIcon coche)
+   {
+	   matriz[x][y].setIcon(coche);
+   }
+   
 		   
    /** 
       The main method creates an instance of the 
@@ -121,7 +127,8 @@ public class mapa
    {  
 
        Runnable r = new Runnable() {
-
+    	   URL ruta = getClass().getResource("../cochito_icon_32x32.png");
+    	   ImageIcon coche = new ImageIcon(ruta);
            @Override
            public void run() {
                mapa cb =
@@ -138,6 +145,7 @@ public class mapa
                // ensures the minimum size is enforced.
                f.setMinimumSize(f.getSize());
                f.setVisible(true);
+               mapa.SetCoche(0,0,coche);
            }
        };
        SwingUtilities.invokeLater(r);
