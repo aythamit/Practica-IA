@@ -10,9 +10,9 @@ public class Bloque {
 	public final static int lado = 32;
 	public final int[] pixeles;
 
-	private final String fondo = "/imagenes/cuadro.png";
-	private final String main = "/imagenes/cuadro_res.png";
-	private final String obsta = "/imagenes/obstaculo.png";
+	private final String fondo = "/img/cuadro.png";
+	private final String main = "/img/cochito_icon_32x32.png";
+	private final String obsta = "/img/obstaculo.png";
 
 	public Bloque(final int tipo) {
 		this.tipo = tipo;
