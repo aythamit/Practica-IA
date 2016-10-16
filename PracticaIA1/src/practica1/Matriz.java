@@ -71,9 +71,9 @@ public class Matriz {
 				pos[0] = i;
 			}
 		}
-		pos[1] = (pos[0] % N) + 1;
-		pos[2] = (pos[0] / N) + 1;
-		insertar(pos[1], pos[2], 0);
+		pos[1] = (pos[0] % N) + 1; // pos x
+		pos[2] = (pos[0] / N) + 1; // pos y
+		insertar(pos[1], pos[2], 0); //inserta fondo
 
 		if (pos[1] == N) {
 			if (pos[2] == 1) {
@@ -116,16 +116,31 @@ public class Matriz {
 
 		switch (dir) {
 		case 0:
+			//if( matrizdata[pos[1] + (pos[2] - 1) * N]) != 1)
+			if( matrizdata[pos[1] + (pos[2] - 1) * N].getTipo() != 1)
 			insertarRojo(pos[1], pos[2] - 1);
+			else
+				insertarRojo(pos[1], pos[2]);
 			break;
 		case 1:
+			if( matrizdata[(pos[1] + 1) + pos[2] * N].getTipo() != 1)
 			insertarRojo(pos[1] + 1, pos[2]);
+			else
+				insertarRojo(pos[1], pos[2]);
 			break;
 		case 2:
+			if( matrizdata[pos[1] + (pos[2] + 1) * N].getTipo() != 1)
 			insertarRojo(pos[1], pos[2] + 1);
+			else
+				insertarRojo(pos[1], pos[2]);
 			break;
 		case 3:
+			if( matrizdata[(pos[1] - 1) + pos[2] * N].getTipo() != 1)
+			{
 			insertarRojo(pos[1] - 1, pos[2]);
+			}
+			else
+				insertarRojo(pos[1], pos[2]);
 			break;
 		default:
 			insertarRojo(pos[1], pos[2]);
