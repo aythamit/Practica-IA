@@ -143,4 +143,4 @@ public void moveraleatorio() {
 		moverRojo(numrandom.nextInt(4));
 	}
 }
-// pepe
+// pepe aa
