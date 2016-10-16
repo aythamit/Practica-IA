@@ -116,9 +116,14 @@ public class Matriz {
 
 		switch (dir) {
 		case 0:
+<<<<<<< HEAD
 			//if( matrizdata[pos[1] + (pos[2] - 1) * N]) != 1)
 			if( matrizdata[(pos[1] -1) + (pos[2] - 2) * N].getTipo() != 1)
 			insertarRojo(pos[1], pos[2] - 1);
+=======
+			if( matrizdata[(pos[1] -1) + (pos[2] - 2) * N].getTipo() != 1)
+				insertarRojo(pos[1], pos[2] - 1);
+>>>>>>> branch 'master' of ssh://git@github.com/aythamit/Practica-IA.git
 			else
 			{
 				System.out.println("Me he chocaoooo");
@@ -127,7 +132,11 @@ public class Matriz {
 			break;
 		case 1:
 			if( matrizdata[(pos[1]) + (pos[2] - 1) * N].getTipo() != 1)
+<<<<<<< HEAD
 			insertarRojo(pos[1] + 1, pos[2]);
+=======
+				insertarRojo(pos[1] + 1, pos[2]);
+>>>>>>> branch 'master' of ssh://git@github.com/aythamit/Practica-IA.git
 			else
 			{
 				System.out.println("Me he chocaoooo");
@@ -136,7 +145,11 @@ public class Matriz {
 			break;
 		case 2:
 			if( matrizdata[(pos[1] - 1) + (pos[2]) * N].getTipo() != 1)
+<<<<<<< HEAD
 			insertarRojo(pos[1], pos[2] + 1);
+=======
+				insertarRojo(pos[1], pos[2] + 1);
+>>>>>>> branch 'master' of ssh://git@github.com/aythamit/Practica-IA.git
 			else
 			{
 				System.out.println("Me he chocaoooo");
@@ -145,9 +158,13 @@ public class Matriz {
 			break;
 		case 3:
 			if( matrizdata[(pos[1] - 2) + (pos[2]-1) * N].getTipo() != 1)
+<<<<<<< HEAD
 			{
 			insertarRojo(pos[1] - 1, pos[2]);
 			}
+=======
+				insertarRojo(pos[1] - 1, pos[2]);
+>>>>>>> branch 'master' of ssh://git@github.com/aythamit/Practica-IA.git
 			else
 			{
 				System.out.println("Me he chocaoooo");
