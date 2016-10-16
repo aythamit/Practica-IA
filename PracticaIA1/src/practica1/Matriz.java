@@ -116,31 +116,40 @@ public class Matriz {
 
 		switch (dir) {
 		case 0:
-			//if( matrizdata[pos[1] + (pos[2] - 1) * N]) != 1)
-			if( matrizdata[pos[1] + (pos[2] - 1) * N].getTipo() != 1)
-			insertarRojo(pos[1], pos[2] - 1);
+			if( matrizdata[(pos[1] -1) + (pos[2] - 2) * N].getTipo() != 1)
+				insertarRojo(pos[1], pos[2] - 1);
 			else
+			{
+				System.out.println("Me he chocaoooo");
 				insertarRojo(pos[1], pos[2]);
+			}
 			break;
 		case 1:
-			if( matrizdata[(pos[1] + 1) + pos[2] * N].getTipo() != 1)
-			insertarRojo(pos[1] + 1, pos[2]);
+			if( matrizdata[(pos[1]) + (pos[2] - 1) * N].getTipo() != 1)
+				insertarRojo(pos[1] + 1, pos[2]);
 			else
+			{
+				System.out.println("Me he chocaoooo");
 				insertarRojo(pos[1], pos[2]);
+			}
 			break;
 		case 2:
-			if( matrizdata[pos[1] + (pos[2] + 1) * N].getTipo() != 1)
-			insertarRojo(pos[1], pos[2] + 1);
+			if( matrizdata[(pos[1] - 1) + (pos[2]) * N].getTipo() != 1)
+				insertarRojo(pos[1], pos[2] + 1);
 			else
+			{
+				System.out.println("Me he chocaoooo");
 				insertarRojo(pos[1], pos[2]);
+			}
 			break;
 		case 3:
-			if( matrizdata[(pos[1] - 1) + pos[2] * N].getTipo() != 1)
-			{
-			insertarRojo(pos[1] - 1, pos[2]);
-			}
+			if( matrizdata[(pos[1] - 2) + (pos[2]-1) * N].getTipo() != 1)
+				insertarRojo(pos[1] - 1, pos[2]);
 			else
+			{
+				System.out.println("Me he chocaoooo");
 				insertarRojo(pos[1], pos[2]);
+			}
 			break;
 		default:
 			insertarRojo(pos[1], pos[2]);

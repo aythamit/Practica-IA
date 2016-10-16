@@ -11,7 +11,7 @@ public class Bloque {
 	public final int[] pixeles;
 
 	private final String fondo = "/img/cuadro.png";
-	private final String main = "/img/cochito_icon_32x32.png";
+	private final String main = "/img/cochito.png";
 	private final String obsta = "/img/obstaculo.png";
 
 	public Bloque(final int tipo) {
