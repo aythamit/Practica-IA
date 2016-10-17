@@ -1,5 +1,5 @@
 package practica1;
-
+ ///// Grupo 7
 import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Dimension;
@@ -81,14 +81,16 @@ public class Practica1 extends Canvas implements Runnable {
 		long iniciotiempo = System.nanoTime(); // Referencias para contar el tiempo
 		long actualizar;
 		requestFocus();
+		mostrar();
 
 		while (enFuncionamiento) { // Bucle principal
 			actualizar = System.nanoTime();
-			if ((actualizar - iniciotiempo) >= 1000000000) {
+			//if ((actualizar - iniciotiempo) >= 1000000000) 
+				if ((actualizar - iniciotiempo) >= 100000){
 				mostrar();
 				matriz.moveraleatorio();
 				segs++;
-				ventana.setTitle("Practica || " + segs);
+				ventana.setTitle("Practica || " + segs + " Coques: ");
 				iniciotiempo = System.nanoTime();
 			}
 		}

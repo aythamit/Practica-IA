@@ -13,6 +13,7 @@ public class Bloque {
 	private final String fondo = "/img/cuadro.png";
 	private final String main = "/img/cochito.png";
 	private final String obsta = "/img/obstaculo.png";
+	private final String meta = "/img/meta.png";
 
 	public Bloque(final int tipo) {
 		this.tipo = tipo;
@@ -25,6 +26,9 @@ public class Bloque {
 			break;
 		case -1:
 			bloque = main;
+			break;
+		case -2:
+			bloque = meta;
 			break;
 		default:
 			bloque = fondo;

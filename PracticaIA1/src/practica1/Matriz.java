@@ -1,20 +1,27 @@
 package practica1;
 import java.util.Random;
+
+import javax.swing.JOptionPane;
 public class Matriz {
 private static final int ladobloque = Bloque.lado;
 	public static final int N = 12;
 	public static final int M = 12;
-	private Bloque[] matrizdata = new Bloque[N * M];
+	Bloque[] matrizdata = new Bloque[N * M];
 	public int[] pixeles;
+	Coche cochito;
+	
 public static Random numrandom = new Random();
 public Matriz() {
 		pixeles = new int[Practica1.ANCHO * Practica1.ALTO];
 System.out.println("La matriz tiene " + N + " columnas y " + M + " filas");
 llenarfondo();
-		insertarRojo(1, M);
+		cochito = new Coche(1,M);
+		insertarCoche(cochito);
+		insertarMeta(N,1);
+		//insertarMeta(2,M-1);
 mostrardatosmatriz();
 }
-private void insertar(final int x, final int y, final int tipo) {
+void insertar(final int x, final int y, final int tipo) {
 		assert ((x <= N) && (y <= M) && (x > 0) && (y > 0));
 		Bloque bloque = new Bloque(tipo);
 		matrizdata[(x - 1) + (y - 1) * N] = bloque;
@@ -33,13 +40,20 @@ private final void llenarfondo() {
 			}
 		}
 	}
-private final void insertarRojo(int x, int y) {
-		if ((x > N) || (y > M) || (x <= 0) || (y <= 0)) {
-			x = 1;
-			y = 1;
+final void insertarCoche(Coche c) {
+		if ((c.getX() > N) || (c.getY() > M) || (c.getX() <= 0) || (c.getY() <= 0)) 
+		{
+			c.setPos(1, 1);
 		}
-		insertar(x, y, -1);
+		insertar(c.getX(), c.getY(), -1);
 	}
+private final void insertarMeta(int x, int y) {
+	if ((x > N) || (y > M) || (x <= 0) || (y <= 0)) {
+		x = N;
+		y = 1;
+	}
+	insertar(x, y, -2);
+}
 private final void mostrardatosmatriz() {
 		for (int j = 0; j < M; j++) {
 			for (int i = 0; i < N; i++) {
@@ -48,7 +62,7 @@ private final void mostrardatosmatriz() {
 			System.out.print('\n');
 		}
 	}
-public void moverRojo(int dir) {
+public void moverRojo(int dir) {/*
 		int[] pos = new int[3];
 		for (int i = 0; i < N * M; i++) {
 			if (matrizdata[i].getTipo() == -1) {
@@ -99,48 +113,77 @@ if (pos[1] == N) {
 		}
 switch (dir) {
 		case 0:
-			if( matrizdata[(pos[1] -1) + (pos[2] - 2) * N].getTipo() != 1)
+		{
+			if( matrizdata[(pos[1] -1) + (pos[2] - 2) * N].getTipo() == -2)
+			{
+				insertarRojo(pos[1], pos[2] - 1);
+				JOptionPane.showMessageDialog(null, "¡Ha llegado a la meta!");
+				System.exit(0);
+			}
+		
+			else if( matrizdata[(pos[1] -1) + (pos[2] - 2) * N].getTipo() != 1)
 				insertarRojo(pos[1], pos[2] - 1);
 			else
 			{
 				System.out.println("Me he chocaoooo");
 				insertarRojo(pos[1], pos[2]);
 			}
-			break;
+		}break;
 		case 1:
-			if( matrizdata[(pos[1]) + (pos[2] - 1) * N].getTipo() != 1)
+		{	if( matrizdata[(pos[1]) + (pos[2] - 1) * N].getTipo() == -2)
+		{
+			insertarRojo(pos[1] + 1, pos[2]);
+				JOptionPane.showMessageDialog(null, "¡Ha llegado a la meta!");
+				System.exit(0);
+		}
+				
+			else if( matrizdata[(pos[1]) + (pos[2] - 1) * N].getTipo() != 1)
 				insertarRojo(pos[1] + 1, pos[2]);
 			else
 			{
 				System.out.println("Me he chocaoooo");
 				insertarRojo(pos[1], pos[2]);
 			}
-			break;
+		}	break;
 		case 2:
-			if( matrizdata[(pos[1] - 1) + (pos[2]) * N].getTipo() != 1)
+		{	if(matrizdata[(pos[1] - 1) + (pos[2]) * N].getTipo() == -2)
+		{
+			insertarRojo(pos[1], pos[2] + 1);
+			JOptionPane.showMessageDialog(null, "¡Ha llegado a la meta!");
+			System.exit(0);
+		}
+	
+			else if( matrizdata[(pos[1] - 1) + (pos[2]) * N].getTipo() != 1)
 				insertarRojo(pos[1], pos[2] + 1);
 			else
 			{
 				System.out.println("Me he chocaoooo");
 				insertarRojo(pos[1], pos[2]);
 			}
-			break;
+		}	break;
 		case 3:
-			if( matrizdata[(pos[1] - 2) + (pos[2]-1) * N].getTipo() != 1)
+		{	if( matrizdata[(pos[1] - 2) + (pos[2]-1) * N].getTipo() == -2)
+		{
+			insertarRojo(pos[1] - 1, pos[2]);
+			JOptionPane.showMessageDialog(null, "¡Ha llegado a la meta!");
+			System.exit(0);
+		}
+	
+			else if( matrizdata[(pos[1] - 2) + (pos[2]-1) * N].getTipo() != 1)
 				insertarRojo(pos[1] - 1, pos[2]);
 			else
 			{
 				System.out.println("Me he chocaoooo");
 				insertarRojo(pos[1], pos[2]);
 			}
-			break;
+		}	break;
 		default:
 			insertarRojo(pos[1], pos[2]);
 			break;
 		}
-	}
+	*/}
 public void moveraleatorio() {
-		moverRojo(numrandom.nextInt(4));
+		cochito.Mover(numrandom.nextInt(4), this);
 	}
 }
 // pepe aa
