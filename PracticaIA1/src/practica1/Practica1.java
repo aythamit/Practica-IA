@@ -4,13 +4,17 @@ import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
-public class Practica1 extends Canvas implements Runnable {
+public class Practica1 extends Canvas implements Runnable, ActionListener {
 
 	private static final long serialVersionUID = 1L; // Numero de serial por si la clase se repite en otro archivo (pasteles de Java)
 
@@ -18,7 +22,8 @@ public class Practica1 extends Canvas implements Runnable {
 	public static final int ANCHO = Bloque.lado * Matriz.N; // Ancho y alto de la pantalla principal (en funcion del tamaño de la matriz)
 	private static final String NOMBRE = "Practica"; // Nombre de la ventana
 	private static volatile boolean enFuncionamiento = false; // Bool para el bucle principal
-
+	private static volatile boolean enPausa = false;
+	
 	private int segs = 0; // Extra temporal para comprobar que funciona correctamente
 
 	private static JFrame ventana; // Objeto ventana para mostrar el canvas dentro
@@ -27,10 +32,17 @@ public class Practica1 extends Canvas implements Runnable {
 
 	private static BufferedImage imagen = new BufferedImage(ANCHO, ALTO, BufferedImage.TYPE_INT_RGB); // Imagen donde cargar los pixeles de la matriz
 	private static int[] pixeles = ((DataBufferInt) imagen.getRaster().getDataBuffer()).getData(); // Se relaciona la imagen con un array (por pixeles)
-
+	JButton btniniciar;
+	JButton btnparar;
+	
 	private Practica1() {
 		setPreferredSize(new Dimension(ANCHO, ALTO)); // dar dimenasion al canvas
-
+		btniniciar = new JButton("Iniciar");
+		btniniciar.addActionListener(this);
+		
+		btnparar = new JButton("Pausar");
+		btnparar.addActionListener(this);
+		
 		matriz = new Matriz(); // Crear el objeto matriz en memoria
 
 		ventana = new JFrame(NOMBRE); // Crear el objeto ventana en memoria
@@ -38,6 +50,8 @@ public class Practica1 extends Canvas implements Runnable {
 		ventana.setResizable(false); // Para que no se pueda cambiar el tamaño de la ventana
 		ventana.setLayout(new BorderLayout()); // Asignar una manera de organizar los datos para sacarlos por pantalla
 		ventana.add(this, BorderLayout.CENTER); // Hacer que el canvas este en el centro de la imagen (de la ventana)
+		ventana.add(btniniciar, BorderLayout.WEST);
+		ventana.add(btnparar, BorderLayout.EAST);
 		ventana.pack(); // Para que la ventana adquiera el mismo tamaño que el canvas de dentro (por si acaso)
 		ventana.setLocationRelativeTo(null); // Hacer que la ventana aparezca en el centro de la pantalla
 		ventana.setVisible(true); // Para que la ventana se vea 
@@ -47,7 +61,7 @@ public class Practica1 extends Canvas implements Runnable {
 		Practica1 practica = new Practica1(); // se llama al constructor y se crea el objeto
 		System.out.println("El programa se ejecuto");
 
-		practica.iniciar(); // Llamada al metodo iniciar para que empiecen los distintos procesos
+		//practica.iniciar(); // Llamada al metodo iniciar para que empiecen los distintos procesos
 	}
 
 	private void iniciar() {
@@ -55,6 +69,13 @@ public class Practica1 extends Canvas implements Runnable {
 		enFuncionamiento = true; // Activar el bool que pone a funcionar el while del bucle principal
 		thread = new Thread(this, "Graficos"); // Crear el objeto thread en memoria 
 		thread.start(); // Empezar el segundo hilo de ejecucion que hemos llamado "Graficos"
+	}
+	private void parar() throws InterruptedException
+	{
+		
+		enFuncionamiento = false;
+		this.matriz = new Matriz();
+		segs = 0;
 	}
 
 	private void mostrar() { // Metodo que muestra la matriz por pantalla
@@ -86,13 +107,59 @@ public class Practica1 extends Canvas implements Runnable {
 		while (enFuncionamiento) { // Bucle principal
 			actualizar = System.nanoTime();
 			//if ((actualizar - iniciotiempo) >= 1000000000) 
-				if ((actualizar - iniciotiempo) >= 100000){
+				if ((actualizar - iniciotiempo) >= 1000000000){
 				mostrar();
-				matriz.moveraleatorio();
+				if(!enPausa)
+				{
+					matriz.moveraleatorio();
 				segs++;
+				}
 				ventana.setTitle("Practica || " + segs + " Coques: ");
 				iniciotiempo = System.nanoTime();
 			}
 		}
 	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) 
+	{
+//		// TODO Auto-generated method stub
+//		if(e.getActionCommand().equals("Nuevo"))
+//		{
+//			this.iniciar();
+//		}
+		
+		if(e.getSource() == btniniciar)
+		{
+			
+			this.iniciar();
+			btnparar.setText("Pausar");
+			enPausa = false;
+		}
+		
+		if(e.getSource() == btnparar)
+		{
+			if(!enPausa)
+			{
+				enPausa = true;
+				btnparar.setText("Reset");
+			}
+			else
+			{
+				try 
+				{
+					this.parar();
+				} catch (InterruptedException e1) 
+					{
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				
+					}
+				
+				btnparar.setText("Pausar");
+			
+			}
+		
+		}
+}
 }
