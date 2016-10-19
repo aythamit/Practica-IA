@@ -54,7 +54,7 @@ private final void insertarMeta(int x, int y) {
 	}
 	insertar(x, y, -2);
 }
-private final void mostrardatosmatriz() {
+public final void mostrardatosmatriz() {
 		for (int j = 0; j < M; j++) {
 			for (int i = 0; i < N; i++) {
 				System.out.print(matrizdata[i + j * N].getTipo() + " ");

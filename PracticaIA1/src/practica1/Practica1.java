@@ -109,6 +109,10 @@ public class Practica1 extends Canvas implements Runnable, ActionListener {
 			//if ((actualizar - iniciotiempo) >= 1000000000) 
 				if ((actualizar - iniciotiempo) >= 1000000000){
 				mostrar();
+				System.out.println("");
+				System.out.println("");
+				
+				matriz.mostrardatosmatriz();
 				if(!enPausa)
 				{
 					matriz.moveraleatorio();
