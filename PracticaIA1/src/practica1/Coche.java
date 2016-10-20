@@ -8,6 +8,8 @@ public class Coche extends Bloque
 	private int y;
 	public int choques = 0;
 
+	private boolean terminado = false;
+
 	int pasajeros;
 
 	public Coche(int x, int y)
@@ -30,6 +32,15 @@ public class Coche extends Bloque
 	{
 		this.x = x;
 		this.y = y;
+	}
+
+	public void Terminado()
+	{
+		if (terminado)
+		{
+			JOptionPane.showMessageDialog(null, "¡Ha llegado a la meta!");
+			System.exit(0);
+		}
 	}
 
 	public void Mover(int dir, Matriz matriz)
@@ -98,9 +109,9 @@ public class Coche extends Bloque
 		{
 			if (matriz.matrizdata[(x - 1) + (y - 2) * Matriz.N].getTipo() == -2)
 			{
+				setPos(x, y - 1);
 				matriz.insertarCoche(this);
-				JOptionPane.showMessageDialog(null, "¡Ha llegado a la meta!");
-				System.exit(0);
+				terminado = true;
 			}
 
 			else if (matriz.matrizdata[(x - 1) + (y - 2) * Matriz.N].getTipo() != 1)
@@ -119,9 +130,9 @@ public class Coche extends Bloque
 		{
 			if (matriz.matrizdata[(x) + (y - 1) * Matriz.N].getTipo() == -2)
 			{
+				setPos(x + 1, y);
 				matriz.insertarCoche(this);
-				JOptionPane.showMessageDialog(null, "¡Ha llegado a la meta!");
-				System.exit(0);
+				terminado = true;
 			}
 
 			else if (matriz.matrizdata[(x) + (y - 1) * Matriz.N].getTipo() != 1)
@@ -140,9 +151,9 @@ public class Coche extends Bloque
 		{
 			if (matriz.matrizdata[(x - 1) + (y) * Matriz.N].getTipo() == -2)
 			{
+				setPos(x, y + 1);
 				matriz.insertarCoche(this);
-				JOptionPane.showMessageDialog(null, "¡Ha llegado a la meta!");
-				System.exit(0);
+				terminado = true;
 			}
 
 			else if (matriz.matrizdata[(x - 1) + (y) * Matriz.N].getTipo() != 1)
@@ -161,9 +172,9 @@ public class Coche extends Bloque
 		{
 			if (matriz.matrizdata[(x - 2) + (y - 1) * Matriz.N].getTipo() == -2)
 			{
+				setPos(x - 1, y);
 				matriz.insertarCoche(this);
-				JOptionPane.showMessageDialog(null, "¡Ha llegado a la meta!");
-				System.exit(0);
+				terminado = true;
 			}
 
 			else if (matriz.matrizdata[(x - 2) + (y - 1) * Matriz.N].getTipo() != 1)

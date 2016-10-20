@@ -5,24 +5,21 @@ import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 
-public class Practica1 extends Canvas implements Runnable, ActionListener
+public class Practica1 extends Canvas implements Runnable
 {
 	private static final long serialVersionUID = 1L; // Numero de serial por si la clase se repite en otro archivo (pasteles de Java)
 
-	public static final int ALTO = Bloque.lado * Matriz.M;
-	public static final int ANCHO = Bloque.lado * Matriz.N; // Ancho y alto de la pantalla principal (en funcion del tamaño de la matriz)
+	public static int ALTO = Bloque.lado * Matriz.M;
+	public static int ANCHO = Bloque.lado * Matriz.N; // Ancho y alto de la pantalla principal (en funcion del tamaño de la matriz)
 	private static final String NOMBRE = "Practica"; // Nombre de la ventana
-	private static volatile boolean enFuncionamiento = false; // Bool para el bucle principal
-	private static volatile boolean enPausa = false;
+	public volatile boolean enFuncionamiento = false; // Bool para el bucle principal
+	public volatile boolean enPausa = true;
 
 	private int segs = 0; // Extra temporal para comprobar que funciona correctamente
 
@@ -32,17 +29,14 @@ public class Practica1 extends Canvas implements Runnable, ActionListener
 
 	private static BufferedImage imagen = new BufferedImage(ANCHO, ALTO, BufferedImage.TYPE_INT_RGB); // Imagen donde cargar los pixeles de la matriz
 	private static int[] pixeles = ((DataBufferInt) imagen.getRaster().getDataBuffer()).getData(); // Se relaciona la imagen con un array (por pixeles)
-	JButton btniniciar;
-	JButton btnparar;
+
+	private Panel panel;
 
 	private Practica1()
 	{
 		setPreferredSize(new Dimension(ANCHO, ALTO)); // dar dimenasion al canvas
-		btniniciar = new JButton("Iniciar");
-		btniniciar.addActionListener(this);
 
-		btnparar = new JButton("Pausar");
-		btnparar.addActionListener(this);
+		panel = new Panel(this);
 
 		matriz = new Matriz(); // Crear el objeto matriz en memoria
 
@@ -51,26 +45,30 @@ public class Practica1 extends Canvas implements Runnable, ActionListener
 		ventana.setResizable(false); // Para que no se pueda cambiar el tamaño de la ventana
 		ventana.setLayout(new BorderLayout()); // Asignar una manera de organizar los datos para sacarlos por pantalla
 		ventana.add(this, BorderLayout.CENTER); // Hacer que el canvas este en el centro de la imagen (de la ventana)
-		ventana.add(btniniciar, BorderLayout.WEST);
-		ventana.add(btnparar, BorderLayout.EAST);
+		ventana.add(panel, BorderLayout.NORTH);
 		ventana.pack(); // Para que la ventana adquiera el mismo tamaño que el canvas de dentro (por si acaso)
 		ventana.setLocationRelativeTo(null); // Hacer que la ventana aparezca en el centro de la pantalla
 		ventana.setVisible(true); // Para que la ventana se vea
 
 		thread = new Thread(this, "Graficos"); // Crear el objeto thread en memoria
-		// mostrar();
-		// System.out.println("Se muestra xd");
+
 	}
 
-	public static void main(String[] args)
-	{ // metodo main para empezar a ejecutar
-		Practica1 practica = new Practica1(); // se llama al constructor y se crea el objeto
-		System.out.println("El programa se ejecuto");
+	private void resizeVentana(Matriz m)
+	{
+		matriz = m;
 
-		// practica.iniciar(); // Llamada aal metodo iniciar para que empiecen los distintos procesos
+		ALTO = Bloque.lado * Matriz.M;
+		ANCHO = Bloque.lado * Matriz.N;
+
+		imagen = new BufferedImage(ANCHO, ALTO, BufferedImage.TYPE_INT_RGB);
+		pixeles = ((DataBufferInt) imagen.getRaster().getDataBuffer()).getData();
+
+		setPreferredSize(new Dimension(ANCHO, ALTO)); // dar dimenasion al canvas
+		ventana.pack();
 	}
 
-	private void iniciar()
+	public void iniciar()
 	{
 		enFuncionamiento = true; // Activar el bool que pone a funcionar el while del bucle principal
 		if (!thread.isAlive())
@@ -79,16 +77,18 @@ public class Practica1 extends Canvas implements Runnable, ActionListener
 		}
 	}
 
-	private void parar() throws InterruptedException
+	public void reset() throws InterruptedException
 	{
 
 		enFuncionamiento = false;
 		thread.join();
 		thread = new Thread(this, "Graficos 2");
-		enPausa = false;
-		this.matriz = new Matriz();
-		mostrar();
+		enPausa = true;
+
+		System.out.println("Los valores a pasar al constructor son: m = " + panel.get_m() + "; n = " + panel.get_n());
+		resizeVentana(new Matriz(panel.get_n(), panel.get_m()));
 		segs = 0;
+		iniciar();
 	}
 
 	private void mostrar()
@@ -106,7 +106,10 @@ public class Practica1 extends Canvas implements Runnable, ActionListener
 
 		Graphics g = estrategia.getDrawGraphics(); // Se crea el objeto de graficos
 
-		g.drawImage(imagen, 0, 0, getWidth(), getHeight(), null); // Se dibujan los graficos (de la imagen)
+		int desde = ((ventana.getWidth() - ANCHO) / 2) - 3;
+		int hasta = ((ventana.getHeight() - panel.getHeight() - ALTO) / 2) - 14;
+
+		g.drawImage(imagen, desde, hasta, ANCHO, ALTO, null); // Se dibujan los graficos (de la imagen)
 		g.dispose(); // Cuando g dibuje la imagen destruye g para que sea mas eficiente
 
 		estrategia.show(); // Se muestran los graficos
@@ -121,18 +124,20 @@ public class Practica1 extends Canvas implements Runnable, ActionListener
 		mostrar();
 
 		while (enFuncionamiento)
-		{ // Bucle principal
+		{ // Bucle principals
+
 			actualizar = System.nanoTime();
 			// if ((actualizar - iniciotiempo) >= 1000000000)
-			if ((actualizar - iniciotiempo) >= 100000000)
+			if ((actualizar - iniciotiempo) >= (1000000000 / panel.slider.getValue()))
 			{
 				mostrar();
 				if (!enPausa)
 				{
-					System.out.println("");
-					System.out.println("");
-
-					matriz.mostrardatosmatriz();
+					matriz.cochito.Terminado();
+					// System.out.println("");
+					// System.out.println("");
+					//
+					// matriz.mostrardatosmatriz();
 
 					matriz.moveraleatorio();
 					segs++;
@@ -143,36 +148,11 @@ public class Practica1 extends Canvas implements Runnable, ActionListener
 		}
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent e)
-	{
-		if (e.getSource() == btniniciar)
-		{
-			this.iniciar();
-			enPausa = false;
+	public static void main(String[] args)
+	{ // metodo main para empezar a ejecutar
+		Practica1 practica = new Practica1(); // se llama al constructor y se crea el objeto
+		System.out.println("El programa se ejecuto");
 
-			btnparar.setText("Pausar");
-		}
-
-		if (e.getSource() == btnparar)
-		{
-			if (!enPausa)
-			{
-				enPausa = true;
-				btnparar.setText("Reset");
-				btniniciar.setText("Continuar");
-			} else
-			{
-				try
-				{
-					this.parar();
-				} catch (InterruptedException e1)
-				{
-					e1.printStackTrace();
-				}
-				btniniciar.setText("Iniciar");
-			}
-
-		}
+		practica.iniciar(); // Llamada al metodo iniciar para que empiecen los distintos procesos
 	}
 }
