@@ -1,5 +1,6 @@
 package practica1;
- ///// Grupo 7
+
+///// Grupo 7
 import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Dimension;
@@ -12,10 +13,9 @@ import java.awt.image.DataBufferInt;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 
-public class Practica1 extends Canvas implements Runnable, ActionListener {
-
+public class Practica1 extends Canvas implements Runnable, ActionListener
+{
 	private static final long serialVersionUID = 1L; // Numero de serial por si la clase se repite en otro archivo (pasteles de Java)
 
 	public static final int ALTO = Bloque.lado * Matriz.M;
@@ -23,26 +23,27 @@ public class Practica1 extends Canvas implements Runnable, ActionListener {
 	private static final String NOMBRE = "Practica"; // Nombre de la ventana
 	private static volatile boolean enFuncionamiento = false; // Bool para el bucle principal
 	private static volatile boolean enPausa = false;
-	
+
 	private int segs = 0; // Extra temporal para comprobar que funciona correctamente
 
-	private static JFrame ventana; // Objeto ventana para mostrar el canvas dentro
-	private static Thread thread; // Objeto thread para ejecutar el programa en varias lineas simultaneamente
-	private static Matriz matriz; // La matriz principal donde los datos son almacenados
+	private JFrame ventana; // Objeto ventana para mostrar el canvas dentro
+	private Thread thread; // Objeto thread para ejecutar el programa en varias lineas simultaneamente
+	private Matriz matriz; // La matriz principal donde los datos son almacenados
 
 	private static BufferedImage imagen = new BufferedImage(ANCHO, ALTO, BufferedImage.TYPE_INT_RGB); // Imagen donde cargar los pixeles de la matriz
 	private static int[] pixeles = ((DataBufferInt) imagen.getRaster().getDataBuffer()).getData(); // Se relaciona la imagen con un array (por pixeles)
 	JButton btniniciar;
 	JButton btnparar;
-	
-	private Practica1() {
+
+	private Practica1()
+	{
 		setPreferredSize(new Dimension(ANCHO, ALTO)); // dar dimenasion al canvas
 		btniniciar = new JButton("Iniciar");
 		btniniciar.addActionListener(this);
-		
+
 		btnparar = new JButton("Pausar");
 		btnparar.addActionListener(this);
-		
+
 		matriz = new Matriz(); // Crear el objeto matriz en memoria
 
 		ventana = new JFrame(NOMBRE); // Crear el objeto ventana en memoria
@@ -54,36 +55,50 @@ public class Practica1 extends Canvas implements Runnable, ActionListener {
 		ventana.add(btnparar, BorderLayout.EAST);
 		ventana.pack(); // Para que la ventana adquiera el mismo tamaño que el canvas de dentro (por si acaso)
 		ventana.setLocationRelativeTo(null); // Hacer que la ventana aparezca en el centro de la pantalla
-		ventana.setVisible(true); // Para que la ventana se vea 
+		ventana.setVisible(true); // Para que la ventana se vea
+
+		thread = new Thread(this, "Graficos"); // Crear el objeto thread en memoria
+		// mostrar();
+		// System.out.println("Se muestra xd");
 	}
 
-	public static void main(String[] args) { // metodo main para empezar a ejecutar
+	public static void main(String[] args)
+	{ // metodo main para empezar a ejecutar
 		Practica1 practica = new Practica1(); // se llama al constructor y se crea el objeto
 		System.out.println("El programa se ejecuto");
 
-		//practica.iniciar(); // Llamada al metodo iniciar para que empiecen los distintos procesos
+		// practica.iniciar(); // Llamada aal metodo iniciar para que empiecen los distintos procesos
 	}
 
-	private void iniciar() {
-		mostrar();
+	private void iniciar()
+	{
 		enFuncionamiento = true; // Activar el bool que pone a funcionar el while del bucle principal
-		thread = new Thread(this, "Graficos"); // Crear el objeto thread en memoria 
-		thread.start(); // Empezar el segundo hilo de ejecucion que hemos llamado "Graficos"
+		if (!thread.isAlive())
+		{
+			thread.start(); // Empezar el segundo hilo de ejecucion que hemos llamado "Graficos"
+		}
 	}
+
 	private void parar() throws InterruptedException
 	{
-		
+
 		enFuncionamiento = false;
+		thread.join();
+		thread = new Thread(this, "Graficos 2");
+		enPausa = false;
 		this.matriz = new Matriz();
+		mostrar();
 		segs = 0;
 	}
 
-	private void mostrar() { // Metodo que muestra la matriz por pantalla
+	private void mostrar()
+	{ // Metodo que muestra la matriz por pantalla
 
 		BufferStrategy estrategia = getBufferStrategy(); // Metodo del canvas para seguir una estrategia de cargado de graficos
 
-		if (estrategia == null) { // Si no hay estrategia asignada asignamos una
-			createBufferStrategy(2);
+		if (estrategia == null)
+		{ // Si no hay estrategia asignada asignamos una
+			createBufferStrategy(1);
 			return;
 		}
 
@@ -98,72 +113,66 @@ public class Practica1 extends Canvas implements Runnable, ActionListener {
 
 	}
 
-	public void run() { // Metodo del segundo thread
+	public void run()
+	{ // Metodo del segundo thread
 		long iniciotiempo = System.nanoTime(); // Referencias para contar el tiempo
 		long actualizar;
 		requestFocus();
 		mostrar();
 
-		while (enFuncionamiento) { // Bucle principal
+		while (enFuncionamiento)
+		{ // Bucle principal
 			actualizar = System.nanoTime();
-			//if ((actualizar - iniciotiempo) >= 1000000000) 
-				if ((actualizar - iniciotiempo) >= 1000000000){
+			// if ((actualizar - iniciotiempo) >= 1000000000)
+			if ((actualizar - iniciotiempo) >= 100000000)
+			{
 				mostrar();
-				System.out.println("");
-				System.out.println("");
-				
-				matriz.mostrardatosmatriz();
-				if(!enPausa)
+				if (!enPausa)
 				{
+					System.out.println("");
+					System.out.println("");
+
+					matriz.mostrardatosmatriz();
+
 					matriz.moveraleatorio();
-				segs++;
+					segs++;
+					ventana.setTitle("Practica || " + segs + " Choques: " + matriz.cochito.choques);
 				}
-				ventana.setTitle("Practica || " + segs + " Coques: ");
 				iniciotiempo = System.nanoTime();
 			}
 		}
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) 
+	public void actionPerformed(ActionEvent e)
 	{
-//		// TODO Auto-generated method stub
-//		if(e.getActionCommand().equals("Nuevo"))
-//		{
-//			this.iniciar();
-//		}
-		
-		if(e.getSource() == btniniciar)
+		if (e.getSource() == btniniciar)
 		{
-			
 			this.iniciar();
-			btnparar.setText("Pausar");
 			enPausa = false;
+
+			btnparar.setText("Pausar");
 		}
-		
-		if(e.getSource() == btnparar)
+
+		if (e.getSource() == btnparar)
 		{
-			if(!enPausa)
+			if (!enPausa)
 			{
 				enPausa = true;
 				btnparar.setText("Reset");
-			}
-			else
+				btniniciar.setText("Continuar");
+			} else
 			{
-				try 
+				try
 				{
 					this.parar();
-				} catch (InterruptedException e1) 
-					{
-					// TODO Auto-generated catch block
+				} catch (InterruptedException e1)
+				{
 					e1.printStackTrace();
-				
-					}
-				
-				btnparar.setText("Pausar");
-			
+				}
+				btniniciar.setText("Iniciar");
 			}
-		
+
 		}
-}
+	}
 }

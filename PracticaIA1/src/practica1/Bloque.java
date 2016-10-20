@@ -5,7 +5,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-public class Bloque {
+public class Bloque
+{
 	private int tipo;
 	public final static int lado = 32;
 	public final int[] pixeles;
@@ -15,12 +16,14 @@ public class Bloque {
 	private final String obsta = "/img/obstaculo.png";
 	private final String meta = "/img/meta.png";
 
-	public Bloque(final int tipo) {
+	public Bloque(final int tipo)
+	{
 		this.tipo = tipo;
 
 		pixeles = new int[lado * lado];
 		String bloque;
-		switch (this.tipo) {
+		switch (this.tipo)
+		{
 		case 1:
 			bloque = obsta;
 			break;
@@ -36,20 +39,24 @@ public class Bloque {
 		}
 
 		BufferedImage imagen;
-		try {
+		try
+		{
 			imagen = ImageIO.read(Bloque.class.getResource(bloque));
 			imagen.getRGB(0, 0, lado, lado, pixeles, 0, lado);
-		} catch (IOException e) {
+		} catch (IOException e)
+		{
 			e.printStackTrace();
 		}
 
 	}
 
-	public final int getTipo() {
+	public final int getTipo()
+	{
 		return tipo;
 	}
 
-	public void setTipo(int var) {
+	public void setTipo(int var)
+	{
 		this.tipo = var;
 	}
 }
