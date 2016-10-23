@@ -10,12 +10,14 @@ public class Coche extends Bloque
 
 	private boolean terminado = false;
 
+	Inteligencia smart;
 	int pasajeros;
 
 	public Coche(int x, int y)
 	{
 		super(-1);
 		setPos(x, y);
+		smart = new Inteligencia();
 	}
 
 	public int getX()
@@ -193,6 +195,27 @@ public class Coche extends Bloque
 			matriz.insertarCoche(this);
 			break;
 		}
+
+	}
+
+	public void moveraleatorio(Matriz m)
+	{
+		Mover(Matriz.numrandom.nextInt(4), m);
+	}
+
+	public void moverSmart(Matriz m)
+	{
+		// System.out.println("Se esta moviendo de manera inteligente.");
+		System.out.println("Los sensores marcan: (" + smart.getSensor(0) + ", " + smart.getSensor(1) + ", "
+				+ smart.getSensor(2) + ", " + smart.getSensor(3) + ")");
+		System.out.println("Las distancias marcan: (" + smart.getDist(0) + ", " + smart.getDist(1) + ", "
+				+ smart.getDist(2) + ", " + smart.getDist(3) + ")");
+
+		int mov = smart.calcularMovimiento();
+
+		System.out.println("El movimiento elegido es " + mov);
+
+		Mover(mov, m);
 
 	}
 

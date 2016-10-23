@@ -23,6 +23,8 @@ public class Matriz
 		insertarMeta(N, 1);
 		// insertarMeta(2,M-1);
 		mostrardatosmatriz();
+
+		// cochito.smart.actSensores(cochito.getX(), cochito.getY(), this);
 	}
 
 	public Matriz(final int m, final int n)
@@ -37,6 +39,8 @@ public class Matriz
 		insertarCoche(cochito);
 		insertarMeta(N, 1);
 		mostrardatosmatriz();
+
+		// cochito.smart.actSensores(cochito.getX(), cochito.getY(), this);
 	}
 
 	public void cambiarMatriz(int[] datos)
@@ -97,6 +101,7 @@ public class Matriz
 			y = 1;
 		}
 		insertar(x, y, -2);
+		cochito.smart.calcularMeta(this);
 	}
 
 	public final void mostrardatosmatriz()
@@ -111,9 +116,12 @@ public class Matriz
 		}
 	}
 
-	public void moveraleatorio()
+	public int getTipo(final int x, final int y)
 	{
-		cochito.Mover(numrandom.nextInt(4), this);
+		if (x > 0 && y > 0 && x <= N && y <= M)
+			return (matrizdata[(x - 1) + (y - 1) * N].getTipo());
+		else
+			return -5;
 	}
 }
 // pepe aa

@@ -155,8 +155,15 @@ public class Practica1 extends Canvas implements Runnable, MouseListener
 					// System.out.println("");
 					//
 					// matriz.mostrardatosmatriz();
+					matriz.cochito.smart.actSensores(matriz.cochito.getX(), matriz.cochito.getY(), matriz);
 
-					matriz.moveraleatorio();
+					if (matriz.cochito.smart.getSensor(0) == -1)
+					{
+						matriz.cochito.moveraleatorio(matriz);
+					} else
+					{
+						matriz.cochito.moverSmart(matriz);
+					}
 					segs++;
 					ventana.setTitle("Practica || " + segs + " Choques: " + matriz.cochito.choques);
 				}
