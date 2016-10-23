@@ -21,7 +21,7 @@ public class Panel extends JPanel implements ActionListener, KeyListener
 	JTextField ancho, alto;
 	JSlider slider;
 	JRadioButton b1, b2, b3, b4;
-	int boton = 1;
+	int boton = 0;
 
 	Practica1 main;
 
@@ -186,13 +186,13 @@ public class Panel extends JPanel implements ActionListener, KeyListener
 
 		if (e.getSource() == b1)
 		{
-			boton = 1;
+			boton = 0;
 		} else if (e.getSource() == b2)
 		{
-			boton = -2;
+			boton = 1;
 		} else if (e.getSource() == b3)
 		{
-			boton = 3;
+			boton = -2;
 		} else if (e.getSource() == b4)
 		{
 			boton = -1;
