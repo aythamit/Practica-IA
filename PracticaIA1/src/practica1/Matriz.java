@@ -39,6 +39,20 @@ public class Matriz
 		mostrardatosmatriz();
 	}
 
+	public void cambiarMatriz(int[] datos)
+	{
+		if (datos.length == matrizdata.length)
+		{
+			for (int i = 0; i < matrizdata.length; i++)
+			{
+				if (datos[i] != matrizdata[i].getTipo())
+				{
+					insertar((i % N) + 1, (i / N) + 1, datos[i]);
+				}
+			}
+		}
+	}
+
 	void insertar(final int x, final int y, final int tipo)
 	{
 		assert ((x <= N) && (y <= M) && (x > 0) && (y > 0));

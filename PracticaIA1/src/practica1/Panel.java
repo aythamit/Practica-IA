@@ -5,9 +5,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 
@@ -17,6 +20,8 @@ public class Panel extends JPanel implements ActionListener, KeyListener
 	JLabel mn;
 	JTextField ancho, alto;
 	JSlider slider;
+	JRadioButton b1, b2, b3, b4;
+	int boton = 1;
 
 	Practica1 main;
 
@@ -48,6 +53,36 @@ public class Panel extends JPanel implements ActionListener, KeyListener
 		this.add(alto);
 		this.add(ancho);
 		this.add(slider);
+	}
+
+	public Panel()
+	{
+
+		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+		b1 = new JRadioButton("1");
+		b1.setSelected(true);
+		b1.addActionListener(this);
+		b2 = new JRadioButton("2");
+		b2.addActionListener(this);
+		b3 = new JRadioButton("3");
+		b3.addActionListener(this);
+		b4 = new JRadioButton("4");
+		b4.addActionListener(this);
+
+		ButtonGroup group = new ButtonGroup();
+		group.add(b1);
+		group.add(b2);
+		group.add(b3);
+		group.add(b4);
+
+		this.add(b1);
+		this.add(b2);
+		this.add(b3);
+		this.add(b4);
+
+		System.out.println("Accedido al constructor vertical");
+
 	}
 
 	public int get_m()
@@ -147,6 +182,20 @@ public class Panel extends JPanel implements ActionListener, KeyListener
 				}
 				btniniciar.setText("Iniciar");
 			}
+		}
+
+		if (e.getSource() == b1)
+		{
+			boton = 1;
+		} else if (e.getSource() == b2)
+		{
+			boton = -2;
+		} else if (e.getSource() == b3)
+		{
+			boton = 3;
+		} else if (e.getSource() == b4)
+		{
+			boton = -1;
 		}
 	}
 }

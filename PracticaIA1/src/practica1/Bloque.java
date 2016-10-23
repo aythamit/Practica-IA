@@ -34,6 +34,7 @@ public class Bloque
 			bloque = meta;
 			break;
 		default:
+			this.tipo = 0;
 			bloque = fondo;
 			break;
 		}

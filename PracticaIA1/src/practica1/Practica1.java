@@ -5,13 +5,16 @@ import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.MouseInfo;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
 import javax.swing.JFrame;
 
-public class Practica1 extends Canvas implements Runnable
+public class Practica1 extends Canvas implements Runnable, MouseListener
 {
 	private static final long serialVersionUID = 1L; // Numero de serial por si la clase se repite en otro archivo (pasteles de Java)
 
@@ -30,13 +33,14 @@ public class Practica1 extends Canvas implements Runnable
 	private static BufferedImage imagen = new BufferedImage(ANCHO, ALTO, BufferedImage.TYPE_INT_RGB); // Imagen donde cargar los pixeles de la matriz
 	private static int[] pixeles = ((DataBufferInt) imagen.getRaster().getDataBuffer()).getData(); // Se relaciona la imagen con un array (por pixeles)
 
-	private Panel panel;
+	private Panel panel, or;
 
 	private Practica1()
 	{
 		setPreferredSize(new Dimension(ANCHO, ALTO)); // dar dimenasion al canvas
 
 		panel = new Panel(this);
+		or = new Panel();
 
 		matriz = new Matriz(); // Crear el objeto matriz en memoria
 
@@ -46,11 +50,14 @@ public class Practica1 extends Canvas implements Runnable
 		ventana.setLayout(new BorderLayout()); // Asignar una manera de organizar los datos para sacarlos por pantalla
 		ventana.add(this, BorderLayout.CENTER); // Hacer que el canvas este en el centro de la imagen (de la ventana)
 		ventana.add(panel, BorderLayout.NORTH);
+		ventana.add(or, BorderLayout.WEST);
 		ventana.pack(); // Para que la ventana adquiera el mismo tamaño que el canvas de dentro (por si acaso)
 		ventana.setLocationRelativeTo(null); // Hacer que la ventana aparezca en el centro de la pantalla
 		ventana.setVisible(true); // Para que la ventana se vea
 
-		thread = new Thread(this, "Graficos"); // Crear el objeto thread en memoria
+		this.addMouseListener(this);
+
+		thread = new Thread(this, "Graficos"); // Crear el objeto thread en memoria;
 
 	}
 
@@ -106,10 +113,18 @@ public class Practica1 extends Canvas implements Runnable
 
 		Graphics g = estrategia.getDrawGraphics(); // Se crea el objeto de graficos
 
-		int desde = ((ventana.getWidth() - ANCHO) / 2) - 3;
+		int desde = ((ventana.getWidth() - ANCHO) / 2) - 32;
 		int hasta = ((ventana.getHeight() - panel.getHeight() - ALTO) / 2) - 14;
+		int anchete = ANCHO;
 
-		g.drawImage(imagen, desde, hasta, ANCHO, ALTO, null); // Se dibujan los graficos (de la imagen)
+		if (desde < 0)
+		{
+			anchete = ANCHO + (-desde);
+			ventana.setSize(ventana.getWidth() + (-desde), ventana.getHeight());
+			desde = 0;
+		}
+
+		g.drawImage(imagen, desde, hasta, anchete, ALTO, null); // Se dibujan los graficos (de la imagen)
 		g.dispose(); // Cuando g dibuje la imagen destruye g para que sea mas eficiente
 
 		estrategia.show(); // Se muestran los graficos
@@ -125,6 +140,8 @@ public class Practica1 extends Canvas implements Runnable
 
 		while (enFuncionamiento)
 		{ // Bucle principals
+
+			// actualizarMatriz();
 
 			actualizar = System.nanoTime();
 			// if ((actualizar - iniciotiempo) >= 1000000000)
@@ -154,5 +171,63 @@ public class Practica1 extends Canvas implements Runnable
 		System.out.println("El programa se ejecuto");
 
 		practica.iniciar(); // Llamada al metodo iniciar para que empiecen los distintos procesos
+	}
+
+	public void mouseClicked(MouseEvent arg0)
+	{
+		if (enPausa)
+		{
+			actualizarMatriz();
+		}
+	}
+
+	public void mouseEntered(MouseEvent arg0)
+	{
+	}
+
+	public void mouseExited(MouseEvent arg0)
+	{
+	}
+
+	public void mousePressed(MouseEvent arg0)
+	{
+	}
+
+	public void mouseReleased(MouseEvent arg0)
+	{
+	}
+
+	public void actualizarMatriz()
+	{
+		int x = (MouseInfo.getPointerInfo().getLocation().x - this.getLocationOnScreen().x
+				- (ventana.getWidth() - ANCHO) / 2 + 32);
+		int y = (MouseInfo.getPointerInfo().getLocation().y - this.getLocationOnScreen().y - 1);
+		int posx;
+		int posy;
+
+		if (x >= 0 && y >= 0 && x < ANCHO && y < ALTO)
+		{
+			posx = x / Bloque.lado + 1;
+			posy = y / Bloque.lado + 1;
+		} else
+		{
+			posx = posy = 0;
+		}
+
+		if (posx > 0 && posy > 0)
+		{
+			// System.out.println("(" + posx + ", " + posy);
+			if (or.boton != -1)
+			{
+				if (matriz.matrizdata[(posx - 1) + (posy - 1) * Matriz.N].getTipo() != -1)
+					matriz.insertar(posx, posy, or.boton);
+			} else
+			{
+				matriz.insertar(matriz.cochito.getX(), matriz.cochito.getY(), 0);
+				matriz.cochito.setPos(posx, posy);
+				matriz.insertar(posx, posy, or.boton);
+			}
+
+		}
 	}
 }
