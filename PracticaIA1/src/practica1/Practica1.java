@@ -18,32 +18,45 @@ public class Practica1 extends Canvas implements Runnable, MouseListener
 {
 	private static final long serialVersionUID = 1L; // Numero de serial por si la clase se repite en otro archivo (pasteles de Java)
 
-	public static int ALTO = Bloque.lado * Matriz.M;
-	public static int ANCHO = Bloque.lado * Matriz.N; // Ancho y alto de la pantalla principal (en funcion del tamaño de la matriz)
-	private static final String NOMBRE = "Practica"; // Nombre de la ventana
-	public volatile boolean enFuncionamiento = false; // Bool para el bucle principal
-	public volatile boolean enPausa = true;
+	public static int ALTO;
+	public static int ANCHO; // Ancho y alto de la pantalla principal (en funcion del tamaño de la matriz)
+	private static String NOMBRE; // Nombre de la ventana
+	public volatile boolean enFuncionamiento; // Bool para el bucle principal
+	public volatile boolean enPausa;
+	private int segs; // Extra temporal para comprobar que funciona correctamente
 
-	private int segs = 0; // Extra temporal para comprobar que funciona correctamente
+	private static BufferedImage imagen; // Imagen donde cargar los pixeles de la matriz
+	private static int[] pixeles; // Se relaciona la imagen con un array (por pixeles)
 
 	private JFrame ventana; // Objeto ventana para mostrar el canvas dentro
-	private Thread thread; // Objeto thread para ejecutar el programa en varias lineas simultaneamente
 	private Matriz matriz; // La matriz principal donde los datos son almacenados
-
-	private static BufferedImage imagen = new BufferedImage(ANCHO, ALTO, BufferedImage.TYPE_INT_RGB); // Imagen donde cargar los pixeles de la matriz
-	private static int[] pixeles = ((DataBufferInt) imagen.getRaster().getDataBuffer()).getData(); // Se relaciona la imagen con un array (por pixeles)
-
-	private Panel panel, or;
+	private Thread thread; // Objeto thread para ejecutar el programa en varias lineas simultaneamente
+	private Panel panel, or; // Se crean los paneles de configuracion
 
 	private Practica1()
 	{
-		setPreferredSize(new Dimension(ANCHO, ALTO)); // dar dimenasion al canvas
+		ALTO = Bloque.lado * Matriz.M;
+		ANCHO = Bloque.lado * Matriz.N;
+		NOMBRE = "Practica";
+		enFuncionamiento = false;
+		enPausa = true;
+		segs = 0;
 
-		panel = new Panel(this);
-		or = new Panel();
+		imagen = new BufferedImage(ANCHO, ALTO, BufferedImage.TYPE_INT_RGB);
+		pixeles = ((DataBufferInt) imagen.getRaster().getDataBuffer()).getData();
 
 		matriz = new Matriz(); // Crear el objeto matriz en memoria
+		panel = new Panel(this);
+		or = new Panel();
+		thread = new Thread(this, "Graficos"); // Crear el objeto thread en memoria;
 
+		setPreferredSize(new Dimension(ANCHO, ALTO)); // dar dimenasion al canvas
+		IniciarVentana();
+		this.addMouseListener(this);
+	}
+
+	private void IniciarVentana()
+	{
 		ventana = new JFrame(NOMBRE); // Crear el objeto ventana en memoria
 		ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Para que al clicar la cruz roja se cierren los procesos
 		ventana.setResizable(false); // Para que no se pueda cambiar el tamaño de la ventana
@@ -54,11 +67,6 @@ public class Practica1 extends Canvas implements Runnable, MouseListener
 		ventana.pack(); // Para que la ventana adquiera el mismo tamaño que el canvas de dentro (por si acaso)
 		ventana.setLocationRelativeTo(null); // Hacer que la ventana aparezca en el centro de la pantalla
 		ventana.setVisible(true); // Para que la ventana se vea
-
-		this.addMouseListener(this);
-
-		thread = new Thread(this, "Graficos"); // Crear el objeto thread en memoria;
-
 	}
 
 	private void resizeVentana(Matriz m)
@@ -92,19 +100,19 @@ public class Practica1 extends Canvas implements Runnable, MouseListener
 		thread = new Thread(this, "Graficos 2");
 		enPausa = true;
 
-		System.out.println("Los valores a pasar al constructor son: m = " + panel.get_m() + "; n = " + panel.get_n());
+		// System.out.println("Los valores a pasar al constructor son: m = " + panel.get_m() + "; n = " + panel.get_n());
 		resizeVentana(new Matriz(panel.get_n(), panel.get_m()));
 		segs = 0;
 		iniciar();
 	}
 
-	private void mostrar()
-	{ // Metodo que muestra la matriz por pantalla
+	private void mostrar() // Metodo que muestra la matriz por pantalla
+	{
 
 		BufferStrategy estrategia = getBufferStrategy(); // Metodo del canvas para seguir una estrategia de cargado de graficos
 
-		if (estrategia == null)
-		{ // Si no hay estrategia asignada asignamos una
+		if (estrategia == null) // Si no hay estrategia asignada asignamos una
+		{
 			createBufferStrategy(1);
 			return;
 		}
@@ -131,20 +139,17 @@ public class Practica1 extends Canvas implements Runnable, MouseListener
 
 	}
 
-	public void run()
-	{ // Metodo del segundo thread
+	public void run() // Metodo del segundo thread
+	{
 		long iniciotiempo = System.nanoTime(); // Referencias para contar el tiempo
 		long actualizar;
 		requestFocus();
-		mostrar();
 
-		while (enFuncionamiento)
-		{ // Bucle principals
-
-			// actualizarMatriz();
+		while (enFuncionamiento) // Bucle principals
+		{
 
 			actualizar = System.nanoTime();
-			// if ((actualizar - iniciotiempo) >= 1000000000)
+
 			if ((actualizar - iniciotiempo) >= (1000000000 / panel.slider.getValue()))
 			{
 				mostrar();
@@ -153,11 +158,11 @@ public class Practica1 extends Canvas implements Runnable, MouseListener
 					matriz.cochito.Terminado();
 					// System.out.println("");
 					// System.out.println("");
-					//
 					// matriz.mostrardatosmatriz();
+
 					matriz.cochito.smart.actSensores(matriz.cochito.getX(), matriz.cochito.getY(), matriz);
 
-					if (matriz.cochito.smart.getSensor(0) == -1)
+					if (or.isMovRandom())
 					{
 						matriz.cochito.moveraleatorio(matriz);
 					} else
@@ -172,20 +177,16 @@ public class Practica1 extends Canvas implements Runnable, MouseListener
 		}
 	}
 
-	public static void main(String[] args)
-	{ // metodo main para empezar a ejecutar
+	public static void main(String[] args) // metodo main para empezar a ejecutar
+	{
 		Practica1 practica = new Practica1(); // se llama al constructor y se crea el objeto
-		System.out.println("El programa se ejecuto");
+		// System.out.println("El programa se ejecuto");
 
 		practica.iniciar(); // Llamada al metodo iniciar para que empiecen los distintos procesos
 	}
 
 	public void mouseClicked(MouseEvent arg0)
 	{
-		if (enPausa)
-		{
-			actualizarMatriz();
-		}
 	}
 
 	public void mouseEntered(MouseEvent arg0)
@@ -198,6 +199,10 @@ public class Practica1 extends Canvas implements Runnable, MouseListener
 
 	public void mousePressed(MouseEvent arg0)
 	{
+		if (enPausa)
+		{
+			actualizarMatriz();
+		}
 	}
 
 	public void mouseReleased(MouseEvent arg0)
@@ -224,15 +229,22 @@ public class Practica1 extends Canvas implements Runnable, MouseListener
 		if (posx > 0 && posy > 0)
 		{
 			// System.out.println("(" + posx + ", " + posy);
-			if (or.boton != -1)
+			if (or.getBoton() != -1)
 			{
 				if (matriz.matrizdata[(posx - 1) + (posy - 1) * Matriz.N].getTipo() != -1)
-					matriz.insertar(posx, posy, or.boton);
+				{
+					if (or.getBoton() == -2)
+					{
+						matriz.insertarMeta(posx, posy);
+					} else
+						matriz.insertar(posx, posy, or.getBoton());
+				}
+
 			} else
 			{
 				matriz.insertar(matriz.cochito.getX(), matriz.cochito.getY(), 0);
 				matriz.cochito.setPos(posx, posy);
-				matriz.insertar(posx, posy, or.boton);
+				matriz.insertar(posx, posy, or.getBoton());
 			}
 
 		}

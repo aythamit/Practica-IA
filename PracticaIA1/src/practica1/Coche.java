@@ -6,17 +6,22 @@ public class Coche extends Bloque
 {
 	private int x;
 	private int y;
-	public int choques = 0;
+	public int choques;
+	int pasajeros;
 
-	private boolean terminado = false;
+	private boolean terminado;
 
 	Inteligencia smart;
-	int pasajeros;
 
 	public Coche(int x, int y)
 	{
 		super(-1);
-		setPos(x, y);
+		this.x = x;
+		this.y = y;
+		choques = 0;
+		pasajeros = 0;
+		terminado = false;
+
 		smart = new Inteligencia();
 	}
 
@@ -109,20 +114,18 @@ public class Coche extends Bloque
 		{
 		case 0:
 		{
-			if (matriz.matrizdata[(x - 1) + (y - 2) * Matriz.N].getTipo() == -2)
+			// if (matriz.matrizdata[(x - 1) + (y - 2) * Matriz.N].getTipo() == -2)
+			if (smart.getSensor(0) != 1)
 			{
 				setPos(x, y - 1);
 				matriz.insertarCoche(this);
-				terminado = true;
-			}
 
-			else if (matriz.matrizdata[(x - 1) + (y - 2) * Matriz.N].getTipo() != 1)
-			{
-				setPos(x, y - 1);
-				matriz.insertarCoche(this);
+				if (smart.getSensor(0) == -2)
+					terminado = true;
+
 			} else
 			{
-				System.out.println("Me he chocaoooo");
+				// System.out.println("Me he chocaoooo");
 				choques++;
 				matriz.insertarCoche(this);
 			}
@@ -130,20 +133,16 @@ public class Coche extends Bloque
 			break;
 		case 1:
 		{
-			if (matriz.matrizdata[(x) + (y - 1) * Matriz.N].getTipo() == -2)
+			if (smart.getSensor(1) != 1)
 			{
 				setPos(x + 1, y);
 				matriz.insertarCoche(this);
-				terminado = true;
-			}
 
-			else if (matriz.matrizdata[(x) + (y - 1) * Matriz.N].getTipo() != 1)
-			{
-				setPos(x + 1, y);
-				matriz.insertarCoche(this);
+				if (smart.getSensor(1) == -2)
+					terminado = true;
 			} else
 			{
-				System.out.println("Me he chocaoooo");
+				// System.out.println("Me he chocaoooo");
 				choques++;
 				matriz.insertarCoche(this);
 			}
@@ -151,20 +150,16 @@ public class Coche extends Bloque
 			break;
 		case 2:
 		{
-			if (matriz.matrizdata[(x - 1) + (y) * Matriz.N].getTipo() == -2)
+			if (smart.getSensor(2) != 1)
 			{
 				setPos(x, y + 1);
 				matriz.insertarCoche(this);
-				terminado = true;
-			}
 
-			else if (matriz.matrizdata[(x - 1) + (y) * Matriz.N].getTipo() != 1)
-			{
-				setPos(x, y + 1);
-				matriz.insertarCoche(this);
+				if (smart.getSensor(2) == -2)
+					terminado = true;
 			} else
 			{
-				System.out.println("Me he chocaoooo");
+				// System.out.println("Me he chocaoooo");
 				choques++;
 				matriz.insertarCoche(this);
 			}
@@ -172,20 +167,17 @@ public class Coche extends Bloque
 			break;
 		case 3:
 		{
-			if (matriz.matrizdata[(x - 2) + (y - 1) * Matriz.N].getTipo() == -2)
+			if (smart.getSensor(3) != 1)
 			{
-				setPos(x - 1, y);
-				matriz.insertarCoche(this);
-				terminado = true;
-			}
 
-			else if (matriz.matrizdata[(x - 2) + (y - 1) * Matriz.N].getTipo() != 1)
-			{
 				setPos(x - 1, y);
 				matriz.insertarCoche(this);
+
+				if (smart.getSensor(3) == -2)
+					terminado = true;
 			} else
 			{
-				System.out.println("Me he chocaoooo");
+				// System.out.println("Me he chocaoooo");
 				choques++;
 				matriz.insertarCoche(this);
 			}
@@ -206,14 +198,14 @@ public class Coche extends Bloque
 	public void moverSmart(Matriz m)
 	{
 		// System.out.println("Se esta moviendo de manera inteligente.");
-		System.out.println("Los sensores marcan: (" + smart.getSensor(0) + ", " + smart.getSensor(1) + ", "
-				+ smart.getSensor(2) + ", " + smart.getSensor(3) + ")");
-		System.out.println("Las distancias marcan: (" + smart.getDist(0) + ", " + smart.getDist(1) + ", "
-				+ smart.getDist(2) + ", " + smart.getDist(3) + ")");
+		// System.out.println("Los sensores marcan: (" + smart.getSensor(0) + ", " + smart.getSensor(1) + ", "
+		// + smart.getSensor(2) + ", " + smart.getSensor(3) + ")");
+		// System.out.println("Las distancias marcan: (" + smart.getDist(0) + ", " + smart.getDist(1) + ", "
+		// + smart.getDist(2) + ", " + smart.getDist(3) + ")");
 
 		int mov = smart.calcularMovimiento();
 
-		System.out.println("El movimiento elegido es " + mov);
+		// System.out.println("El movimiento elegido es " + mov);
 
 		Mover(mov, m);
 

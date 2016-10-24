@@ -48,7 +48,6 @@ public class Bloque
 		{
 			e.printStackTrace();
 		}
-
 	}
 
 	public final int getTipo()
@@ -56,8 +55,8 @@ public class Bloque
 		return tipo;
 	}
 
-	public void setTipo(int var)
-	{
-		this.tipo = var;
-	}
+	// public void setTipo(int var)
+	// {
+	// this.tipo = var;
+	// }
 }

@@ -1,5 +1,7 @@
 package practica1;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -16,12 +18,16 @@ import javax.swing.JTextField;
 
 public class Panel extends JPanel implements ActionListener, KeyListener
 {
+	private static final long serialVersionUID = 1L;
+
 	JButton btniniciar, btnparar;
 	JLabel mn;
 	JTextField ancho, alto;
 	JSlider slider;
-	JRadioButton b1, b2, b3, b4;
-	int boton = 0;
+	JRadioButton b1, b2, b3, b4, br, bs;
+
+	private boolean random = true;
+	private int boton = 0;
 
 	Practica1 main;
 
@@ -60,15 +66,32 @@ public class Panel extends JPanel implements ActionListener, KeyListener
 
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-		b1 = new JRadioButton("1");
+		mn = new JLabel("\t");
+		mn.setFont(new Font("serief", Font.ITALIC, 15));
+
+		b1 = new JRadioButton("F");
+		b1.setForeground(new Color(195, 195, 195));
 		b1.setSelected(true);
 		b1.addActionListener(this);
-		b2 = new JRadioButton("2");
+		b2 = new JRadioButton("O");
+		b2.setForeground(new Color(153, 217, 234));
 		b2.addActionListener(this);
-		b3 = new JRadioButton("3");
+		b3 = new JRadioButton("M");
+		b3.setForeground(new Color(237, 28, 36));
 		b3.addActionListener(this);
-		b4 = new JRadioButton("4");
+		b4 = new JRadioButton("C");
+		// b4.setForeground(new Color(255, 255, 255));
 		b4.addActionListener(this);
+
+		br = new JRadioButton("R");
+		br.setSelected(true);
+		br.addActionListener(this);
+		bs = new JRadioButton("S");
+		bs.addActionListener(this);
+
+		ButtonGroup grupo = new ButtonGroup();
+		grupo.add(br);
+		grupo.add(bs);
 
 		ButtonGroup group = new ButtonGroup();
 		group.add(b1);
@@ -76,12 +99,17 @@ public class Panel extends JPanel implements ActionListener, KeyListener
 		group.add(b3);
 		group.add(b4);
 
+		this.add(mn);
 		this.add(b1);
 		this.add(b2);
 		this.add(b3);
 		this.add(b4);
 
-		System.out.println("Accedido al constructor vertical");
+		this.add(mn);
+		this.add(br);
+		this.add(bs);
+
+		// System.out.println("Accedido al constructor vertical");
 
 	}
 
@@ -89,10 +117,10 @@ public class Panel extends JPanel implements ActionListener, KeyListener
 	{
 		int m = 12;
 
-		System.out.println("El texto es: " + ancho.getText());
+		// System.out.println("El texto es: " + ancho.getText());
 		if (ancho.getText().length() != 0)
 		{
-			System.out.println("Se convierte " + ancho.getText() + " a int");
+			// System.out.println("Se convierte " + ancho.getText() + " a int");
 			m = Integer.parseInt(ancho.getText());
 		} else
 		{
@@ -106,10 +134,10 @@ public class Panel extends JPanel implements ActionListener, KeyListener
 	{
 		int n = 12;
 
-		System.out.println("El texto es: " + alto.getText());
+		// System.out.println("El texto es: " + alto.getText());
 		if (alto.getText().length() != 0)
 		{
-			System.out.println("Se convierte " + alto.getText() + " a int");
+			// System.out.println("Se convierte " + alto.getText() + " a int");
 			n = Integer.parseInt(alto.getText());
 		} else
 		{
@@ -119,14 +147,22 @@ public class Panel extends JPanel implements ActionListener, KeyListener
 		return n;
 	}
 
+	public int getBoton()
+	{
+		return boton;
+	}
+
+	public boolean isMovRandom()
+	{
+		return random;
+	}
+
 	public void keyPressed(KeyEvent arg0)
 	{
-		// TODO Auto-generated method stub
 	}
 
 	public void keyReleased(KeyEvent arg0)
 	{
-		// TODO Auto-generated method stub
 	}
 
 	public void keyTyped(KeyEvent e)
@@ -197,5 +233,14 @@ public class Panel extends JPanel implements ActionListener, KeyListener
 		{
 			boton = -1;
 		}
+
+		if (e.getSource() == br)
+		{
+			random = true;
+		} else if (e.getSource() == bs)
+		{
+			random = false;
+		}
+
 	}
 }
