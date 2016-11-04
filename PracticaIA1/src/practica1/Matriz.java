@@ -102,7 +102,8 @@ public class Matriz
 		}
 		insertar(x, y, -2);
 		// System.out.println("Se calcula la nueva meta");
-		cochito.smart.calcularMeta(this);
+		if (cochito.smart != null)
+			cochito.smart.calcularMeta(this);
 	}
 
 	private final void borrarMeta()
@@ -128,10 +129,10 @@ public class Matriz
 		}
 	}
 
-	public int getTipo(final int x, final int y)
+	public int getTipo(final Pos pos)
 	{
-		if (x > 0 && y > 0 && x <= N && y <= M)
-			return (matrizdata[(x - 1) + (y - 1) * N].getTipo());
+		if (pos.x > 0 && pos.y > 0 && pos.x <= N && pos.y <= M)
+			return (matrizdata[(pos.x - 1) + (pos.y - 1) * N].getTipo());
 		else
 			return -5;
 	}

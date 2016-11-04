@@ -4,8 +4,8 @@ import javax.swing.JOptionPane;
 
 public class Coche extends Bloque
 {
-	private int x;
-	private int y;
+
+	private Pos pos;
 	public int choques;
 	int pasajeros;
 
@@ -16,29 +16,35 @@ public class Coche extends Bloque
 	public Coche(int x, int y)
 	{
 		super(-1);
-		this.x = x;
-		this.y = y;
+		pos = new Pos(x, y);
 		choques = 0;
 		pasajeros = 0;
 		terminado = false;
 
-		smart = new Inteligencia();
+		smart = null;
+
+		// smart.nodoactual = new Nodo(pos);
+		// smart.visitados = new NodosVisitados(pos);
 	}
 
 	public int getX()
 	{
-		return x;
+		return pos.x;
 	}
 
 	public int getY()
 	{
-		return y;
+		return pos.y;
 	}
 
 	public void setPos(int x, int y)
 	{
-		this.x = x;
-		this.y = y;
+		pos = new Pos(x, y);
+	}
+
+	public void setPos(final Pos npos)
+	{
+		pos = npos;
 	}
 
 	public void Terminado()
@@ -53,11 +59,11 @@ public class Coche extends Bloque
 	public void Mover(int dir, Matriz matriz)
 	{
 
-		matriz.insertar(x, y, 0); // inserta fondo
+		matriz.insertar(pos.x, pos.y, 0); // inserta fondo
 
-		if (x == Matriz.N)
+		if (pos.x == Matriz.N)
 		{
-			if (y == 1)
+			if (pos.y == 1)
 			{
 				while (dir == 1 || dir == 0)
 				{
@@ -68,9 +74,9 @@ public class Coche extends Bloque
 			{
 				dir = Matriz.numrandom.nextInt(4);
 			}
-		} else if (x == 1)
+		} else if (pos.x == 1)
 		{
-			if (y == Matriz.M)
+			if (pos.y == Matriz.M)
 			{
 				while (dir == 3 || dir == 2)
 				{
@@ -82,9 +88,9 @@ public class Coche extends Bloque
 				dir = Matriz.numrandom.nextInt(4);
 			}
 		}
-		if (y == Matriz.M)
+		if (pos.y == Matriz.M)
 		{
-			if (x == Matriz.N)
+			if (pos.x == Matriz.N)
 			{
 				while (dir == 1 || dir == 2)
 				{
@@ -95,9 +101,9 @@ public class Coche extends Bloque
 			{
 				dir = Matriz.numrandom.nextInt(4);
 			}
-		} else if (y == 1)
+		} else if (pos.y == 1)
 		{
-			if (x == 1)
+			if (pos.x == 1)
 			{
 				while (dir == 3 || dir == 0)
 				{
@@ -115,12 +121,12 @@ public class Coche extends Bloque
 		case 0:
 		{
 			// if (matriz.matrizdata[(x - 1) + (y - 2) * Matriz.N].getTipo() == -2)
-			if (smart.getSensor(0) != 1)
+			if (matriz.matrizdata[(pos.x - 1) + (pos.y - 2) * Matriz.N].getTipo() != 1)
 			{
-				setPos(x, y - 1);
+				setPos(pos.x, pos.y - 1);
 				matriz.insertarCoche(this);
 
-				if (smart.getSensor(0) == -2)
+				if (matriz.matrizdata[(pos.x - 1) + (pos.y - 1) * Matriz.N].getTipo() == -2)
 					terminado = true;
 
 			} else
@@ -133,12 +139,12 @@ public class Coche extends Bloque
 			break;
 		case 1:
 		{
-			if (smart.getSensor(1) != 1)
+			if (matriz.matrizdata[(pos.x) + (pos.y - 1) * Matriz.N].getTipo() != 1)
 			{
-				setPos(x + 1, y);
+				setPos(pos.x + 1, pos.y);
 				matriz.insertarCoche(this);
 
-				if (smart.getSensor(1) == -2)
+				if (matriz.matrizdata[(pos.x - 1) + (pos.y - 1) * Matriz.N].getTipo() == -2)
 					terminado = true;
 			} else
 			{
@@ -150,12 +156,12 @@ public class Coche extends Bloque
 			break;
 		case 2:
 		{
-			if (smart.getSensor(2) != 1)
+			if (matriz.matrizdata[(pos.x - 1) + (pos.y) * Matriz.N].getTipo() != 1)
 			{
-				setPos(x, y + 1);
+				setPos(pos.x, pos.y + 1);
 				matriz.insertarCoche(this);
 
-				if (smart.getSensor(2) == -2)
+				if (matriz.matrizdata[(pos.x - 1) + (pos.y - 1) * Matriz.N].getTipo() == -2)
 					terminado = true;
 			} else
 			{
@@ -167,13 +173,13 @@ public class Coche extends Bloque
 			break;
 		case 3:
 		{
-			if (smart.getSensor(3) != 1)
+			if (matriz.matrizdata[(pos.x - 2) + (pos.y - 1) * Matriz.N].getTipo() != 1)
 			{
 
-				setPos(x - 1, y);
+				setPos(pos.x - 1, pos.y);
 				matriz.insertarCoche(this);
 
-				if (smart.getSensor(3) == -2)
+				if (matriz.matrizdata[(pos.x - 1) + (pos.y - 1) * Matriz.N].getTipo() == -2)
 					terminado = true;
 			} else
 			{
@@ -207,8 +213,53 @@ public class Coche extends Bloque
 
 		// System.out.println("El movimiento elegido es " + mov);
 
-		Mover(mov, m);
+		supermover(mov, m);
 
+	}
+
+	public void activarInteligencia()
+	{
+		if (smart == null)
+		{
+			smart = new Inteligencia(pos);
+		}
+	}
+
+	public void supermover(final int dir, final Matriz matriz)
+	{
+		matriz.insertar(pos.x, pos.y, 0);
+
+		switch (dir)
+		{
+		case 0:
+			setPos(pos.x, pos.y - 1);
+			matriz.insertarCoche(this);
+			break;
+		case 1:
+			setPos(pos.x + 1, pos.y);
+			matriz.insertarCoche(this);
+			break;
+		case 2:
+			setPos(pos.x, pos.y + 1);
+			matriz.insertarCoche(this);
+			break;
+		case 3:
+			setPos(pos.x - 1, pos.y);
+			matriz.insertarCoche(this);
+			break;
+		default:
+			matriz.insertarCoche(this);
+			break;
+		}
+		if (smart.nodoactual.getTipo() == -2)
+		{
+			terminado = true;
+		}
+	}
+
+	public Pos getPos()
+	{
+		return pos;
 	}
 
 }

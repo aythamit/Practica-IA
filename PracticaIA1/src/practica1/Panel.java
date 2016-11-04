@@ -44,7 +44,7 @@ public class Panel extends JPanel implements ActionListener, KeyListener
 
 		btniniciar = new JButton("Iniciar");
 		btniniciar.addActionListener(this);
-		btnparar = new JButton("Pausar");
+		btnparar = new JButton("Reset");
 		btnparar.addActionListener(this);
 
 		slider = new JSlider();

@@ -160,13 +160,13 @@ public class Practica1 extends Canvas implements Runnable, MouseListener
 					// System.out.println("");
 					// matriz.mostrardatosmatriz();
 
-					matriz.cochito.smart.actSensores(matriz.cochito.getX(), matriz.cochito.getY(), matriz);
-
 					if (or.isMovRandom())
 					{
 						matriz.cochito.moveraleatorio(matriz);
 					} else
 					{
+						matriz.cochito.activarInteligencia();
+						matriz.cochito.smart.actSensores(matriz);
 						matriz.cochito.moverSmart(matriz);
 					}
 					segs++;
@@ -247,6 +247,12 @@ public class Practica1 extends Canvas implements Runnable, MouseListener
 				matriz.insertar(posx, posy, or.getBoton());
 			}
 
+		}
+
+		if (matriz.cochito.smart != null)
+		{
+			matriz.cochito.smart.visitados.clear();
+			matriz.cochito.smart.nodoactual = new Nodo(matriz.cochito.getPos());
 		}
 	}
 }
