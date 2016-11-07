@@ -5,14 +5,17 @@ import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.MouseInfo;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
 
 public class Practica1 extends Canvas implements Runnable, MouseListener
 {
@@ -23,6 +26,8 @@ public class Practica1 extends Canvas implements Runnable, MouseListener
 	private static String NOMBRE; // Nombre de la ventana
 	public volatile boolean enFuncionamiento; // Bool para el bucle principal
 	public volatile boolean enPausa;
+	private double scalancho;
+	private double scalalto;
 	private int segs; // Extra temporal para comprobar que funciona correctamente
 
 	private static BufferedImage imagen; // Imagen donde cargar los pixeles de la matriz
@@ -32,6 +37,7 @@ public class Practica1 extends Canvas implements Runnable, MouseListener
 	private Matriz matriz; // La matriz principal donde los datos son almacenados
 	private Thread thread; // Objeto thread para ejecutar el programa en varias lineas simultaneamente
 	private Panel panel, or; // Se crean los paneles de configuracion
+	JScrollPane scroll;
 
 	private Practica1()
 	{
@@ -42,6 +48,9 @@ public class Practica1 extends Canvas implements Runnable, MouseListener
 		enPausa = true;
 		segs = 0;
 
+		scalalto = 1;
+		scalancho = 1;
+
 		imagen = new BufferedImage(ANCHO, ALTO, BufferedImage.TYPE_INT_RGB);
 		pixeles = ((DataBufferInt) imagen.getRaster().getDataBuffer()).getData();
 
@@ -51,6 +60,7 @@ public class Practica1 extends Canvas implements Runnable, MouseListener
 		thread = new Thread(this, "Graficos"); // Crear el objeto thread en memoria;
 
 		setPreferredSize(new Dimension(ANCHO, ALTO)); // dar dimenasion al canvas
+		scroll = new JScrollPane(this);
 		IniciarVentana();
 		this.addMouseListener(this);
 	}
@@ -59,7 +69,7 @@ public class Practica1 extends Canvas implements Runnable, MouseListener
 	{
 		ventana = new JFrame(NOMBRE); // Crear el objeto ventana en memoria
 		ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Para que al clicar la cruz roja se cierren los procesos
-		ventana.setResizable(false); // Para que no se pueda cambiar el tamaño de la ventana
+		// ventana.setResizable(false); // Para que no se pueda cambiar el tamaño de la ventana
 		ventana.setLayout(new BorderLayout()); // Asignar una manera de organizar los datos para sacarlos por pantalla
 		ventana.add(this, BorderLayout.CENTER); // Hacer que el canvas este en el centro de la imagen (de la ventana)
 		ventana.add(panel, BorderLayout.NORTH);
@@ -78,9 +88,12 @@ public class Practica1 extends Canvas implements Runnable, MouseListener
 
 		imagen = new BufferedImage(ANCHO, ALTO, BufferedImage.TYPE_INT_RGB);
 		pixeles = ((DataBufferInt) imagen.getRaster().getDataBuffer()).getData();
-
+		// ventana.remove(this);
 		setPreferredSize(new Dimension(ANCHO, ALTO)); // dar dimenasion al canvas
+		// scroll = new JScrollPane(this);
+		// ventana.add(scroll, BorderLayout.CENTER);
 		ventana.pack();
+
 	}
 
 	public void iniciar()
@@ -122,17 +135,40 @@ public class Practica1 extends Canvas implements Runnable, MouseListener
 		Graphics g = estrategia.getDrawGraphics(); // Se crea el objeto de graficos
 
 		int desde = ((ventana.getWidth() - ANCHO) / 2) - 32;
-		int hasta = ((ventana.getHeight() - panel.getHeight() - ALTO) / 2) - 14;
+		int hasta = ((ventana.getHeight() - panel.getHeight() - ALTO) / 2) - 18;
 		int anchete = ANCHO;
+		int altete = ALTO;
 
-		if (desde < 0)
-		{
-			anchete = ANCHO + (-desde);
-			ventana.setSize(ventana.getWidth() + (-desde), ventana.getHeight());
-			desde = 0;
-		}
+		/*
+		 * if (desde < 0) { anchete = ANCHO + (-desde); ventana.setSize(ventana.getWidth() + (-desde), ventana.getHeight()); desde = 0; } if (hasta < 0) { altete = ALTO + (-hasta); ventana.setSize(ventana.getWidth(), ventana.getHeight() + (-hasta)); hasta = 0; }
+		 */
+		// if (ventana.getWidth() < ANCHO)
+		// {
+		// AffineTransform at = AffineTransform.getScaleInstance(0.5, 0.5);
+		// ((Graphics2D) g).drawRenderedImage(imagen, at);
+		// g.drawImage(imagen, desde, hasta, ANCHO, altete, null);
+		// } else if (ventana.getHeight() < ALTO)
+		// {
+		// AffineTransform at = AffineTransform.getScaleInstance(0.5, 0.5);
+		// ((Graphics2D) g).drawRenderedImage(imagen, at);
+		// g.drawImage(imagen, desde, hasta, ANCHO, ALTO, null);
+		// } else
 
-		g.drawImage(imagen, desde, hasta, anchete, ALTO, null); // Se dibujan los graficos (de la imagen)
+		scalancho = ((double) ventana.getWidth() - or.getWidth() - 20) / (double) ANCHO;
+		scalalto = ((double) ventana.getHeight() - panel.getHeight() - 40) / (double) ALTO;
+		if (scalancho > 1)
+			scalancho = 1;
+		if (scalalto > 1)
+			scalalto = 1;
+		// AffineTransform at = AffineTransform.getScaleInstance(0.5, 0.5);
+		AffineTransform at = AffineTransform.getScaleInstance(scalancho, scalalto);
+		// System.out.println(ventana.getWidth() + " / " + ANCHO + " = " + scalancho + " , " + scalalto);
+		((Graphics2D) g).drawRenderedImage(imagen, at);
+
+		// AffineTransform at = AffineTransform.getScaleInstance(0.5, 0.5);
+		// ((Graphics2D) g).drawRenderedImage(imagen, at);
+		// g.drawImage(imagen, 0, 0, (ventana.getWidth() - or.getWidth() - (int) (1.1 * matriz.N)),
+		// ventana.getHeight() - panel.getHeight(), null); // Se dibujan los graficos (de la imagen)
 		g.dispose(); // Cuando g dibuje la imagen destruye g para que sea mas eficiente
 
 		estrategia.show(); // Se muestran los graficos
@@ -211,16 +247,15 @@ public class Practica1 extends Canvas implements Runnable, MouseListener
 
 	public void actualizarMatriz()
 	{
-		int x = (MouseInfo.getPointerInfo().getLocation().x - this.getLocationOnScreen().x
-				- (ventana.getWidth() - ANCHO) / 2 + 32);
+		int x = (MouseInfo.getPointerInfo().getLocation().x - this.getLocationOnScreen().x - 1);
 		int y = (MouseInfo.getPointerInfo().getLocation().y - this.getLocationOnScreen().y - 1);
 		int posx;
 		int posy;
 
 		if (x >= 0 && y >= 0 && x < ANCHO && y < ALTO)
 		{
-			posx = x / Bloque.lado + 1;
-			posy = y / Bloque.lado + 1;
+			posx = (int) (x / (Bloque.lado * scalancho)) + 1;
+			posy = (int) (y / (Bloque.lado * scalalto)) + 1;
 		} else
 		{
 			posx = posy = 0;
@@ -229,6 +264,7 @@ public class Practica1 extends Canvas implements Runnable, MouseListener
 		if (posx > 0 && posy > 0)
 		{
 			// System.out.println("(" + posx + ", " + posy);
+			System.out.println(x + " / " + (Bloque.lado * scalancho) + " +1 = " + (x / (Bloque.lado * scalancho)));
 			if (or.getBoton() != -1)
 			{
 				if (matriz.matrizdata[(posx - 1) + (posy - 1) * Matriz.N].getTipo() != -1)
