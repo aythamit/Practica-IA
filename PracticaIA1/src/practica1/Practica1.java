@@ -152,6 +152,7 @@ public class Practica1 extends Canvas implements Runnable, MouseListener
 		// AffineTransform at = AffineTransform.getScaleInstance(0.5, 0.5);
 		// ((Graphics2D) g).drawRenderedImage(imagen, at);
 		// g.drawImage(imagen, desde, hasta, ANCHO, ALTO, null);
+
 		// } else
 
 		scalancho = ((double) ventana.getWidth() - or.getWidth() - 20) / (double) ANCHO;
